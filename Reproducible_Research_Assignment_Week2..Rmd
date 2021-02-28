@@ -62,13 +62,15 @@ str(activity)
 steps_each_day<-activity%>%
   group_by(date)%>%
   summarise_at(vars(steps),list(sum=sum))
-ggplot(data=steps_each_day, aes(sum)) + 
+plot1<-ggplot(data=steps_each_day, aes(sum)) + 
   geom_histogram(binwidth = 2000)+ 
   labs(title="Total number of steps taken each day") +
   labs(x="Total steps",y="Freqency")
-#png(filename="plot1.png")
-#plot(g1)
-#dev.off()
+plot1
+
+png(filename="plot1.png")
+plot(plot1)
+dev.off()
 ```
 
 ### 3 Mean and median number of steps taken each day
@@ -91,7 +93,13 @@ The mean of the number of steps is: `r gemiddeld`
 steps_each_day_interval<-activity%>%
   group_by(interval)%>%
   summarise_at(vars(steps),list(mean=mean),na.rm=TRUE)
-ggplot(steps_each_day_interval, aes(interval, mean)) + geom_line() 
+plot2<-ggplot(steps_each_day_interval, aes(interval, mean)) + geom_line() 
+
+plot2
+
+png(filename="plot2.png")
+plot(plot2)
+dev.off()
 ```
 
 ### 5 The 5-minute interval that, on average, contains the maximum number of steps
@@ -127,7 +135,12 @@ Because this is a timeseries, I choose for the imputeTS package
 First find out where the missing data is:
 ```{r}
 #where are the missing data
-ggplot_na_distribution(activity$steps)
+plot3<- ggplot_na_distribution(activity$steps)
+plot3
+
+png(filename="plot3.png")
+plot(plot3)
+dev.off()
 ```
 
 Ok now its time to see what different impute methods are doing
@@ -141,14 +154,24 @@ p3<-ggplot_na_imputations(activity$steps, imp_kalman, subtitle= "Visualization o
 imp_ma <- na_ma(activity$steps)
 p4<-ggplot_na_imputations(activity$steps, imp_ma, subtitle= "Visualization of missing value replacements \nmethod=ma")
 #Overview of plots
-grid.arrange(p1, p2, p3, p4, nrow = 2)
+plot7<-grid.arrange(p1, p2, p3, p4, nrow = 2)
+
+png(filename="plot7.png")
+plot(plot7)
+dev.off()
+
 ```
 
 
 It looks like the method mean is the best method for imputing, so that will it be.
 ```{r}
 imp_mean <- na_mean(activity$steps)
-ggplot_na_imputations(activity$steps, imp_mean, subtitle= "Visualization of missing value replacements, method=mean")
+plot4<- ggplot_na_imputations(activity$steps, imp_mean, subtitle= "Visualization of missing value replacements, method=mean")
+plot4
+
+png(filename="plot4.png")
+plot(plot4)
+dev.off()
 ```
 
 ### 7 Histogram of the total number of steps taken each day after missing values are imputed
@@ -158,12 +181,18 @@ activity_imp<-cbind(activity, imp_mean)
 steps_each_day_imp<-activity_imp%>%
                 group_by(date)%>%
                 summarise_at(vars(imp_mean),list(sum=sum))
-ggplot(data=steps_each_day_imp, aes(sum)) + 
+plot5<-ggplot(data=steps_each_day_imp, aes(sum)) + 
       geom_histogram(binwidth = 2000)+ 
       labs(title="Total number of steps taken each day") +
       labs(x="Total steps",y="Freqency")
 mediaan_imp<-median(steps_each_day_imp$sum, na.rm=TRUE)
 gemiddeld_imp<-round(mean(steps_each_day_imp$sum, na.rm=TRUE),2)
+
+plot5
+
+png(filename="plot5.png")
+plot(plot5)
+dev.off()
 ```
 The median before imputing: `r mediaan` and after imputing `r mediaan_imp`
 The mean before imputing: `r gemiddeld` and after imputing `r gemiddeld_imp`
@@ -179,6 +208,13 @@ avg_most_steps_comp<-activity%>%
                      summarise_at(vars(steps), list(gemiddeld = mean), na.rm=TRUE)
 d <- ggplot(avg_most_steps_comp, aes(interval,gemiddeld)) + geom_line() 
 d + facet_wrap(~ weekday,  dir = "v")+ labs(title="Average number of steps taken per 5-minute interval ")
+
+plot6<-d + facet_wrap(~ weekday,  dir = "v")+ labs(title="Average number of steps taken per 5-minute interval ")
+
+
+png(filename="plot6.png")
+plot(plot6)
+dev.off()
 ````
 
 

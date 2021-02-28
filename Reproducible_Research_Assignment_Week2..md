@@ -98,18 +98,24 @@ str(activity)
 steps_each_day<-activity%>%
   group_by(date)%>%
   summarise_at(vars(steps),list(sum=sum))
-ggplot(data=steps_each_day, aes(sum)) + 
+plot1<-ggplot(data=steps_each_day, aes(sum)) + 
   geom_histogram(binwidth = 2000)+ 
   labs(title="Total number of steps taken each day") +
   labs(x="Total steps",y="Freqency")
+plot1
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
-#png(filename="plot1.png")
-#plot(g1)
-#dev.off()
+png(filename="plot1.png")
+plot(plot1)
+dev.off()
+```
+
+```
+## png 
+##   2
 ```
 
 ### 3 Mean and median number of steps taken each day
@@ -145,10 +151,23 @@ The mean of the number of steps is: 10766.19
 steps_each_day_interval<-activity%>%
   group_by(interval)%>%
   summarise_at(vars(steps),list(mean=mean),na.rm=TRUE)
-ggplot(steps_each_day_interval, aes(interval, mean)) + geom_line() 
+plot2<-ggplot(steps_each_day_interval, aes(interval, mean)) + geom_line() 
+
+plot2
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+png(filename="plot2.png")
+plot(plot2)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
 
 ### 5 The 5-minute interval that, on average, contains the maximum number of steps
 
@@ -186,10 +205,22 @@ First find out where the missing data is:
 
 ```r
 #where are the missing data
-ggplot_na_distribution(activity$steps)
+plot3<- ggplot_na_distribution(activity$steps)
+plot3
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+```r
+png(filename="plot3.png")
+plot(plot3)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
 
 Ok now its time to see what different impute methods are doing
 
@@ -203,20 +234,43 @@ p3<-ggplot_na_imputations(activity$steps, imp_kalman, subtitle= "Visualization o
 imp_ma <- na_ma(activity$steps)
 p4<-ggplot_na_imputations(activity$steps, imp_ma, subtitle= "Visualization of missing value replacements \nmethod=ma")
 #Overview of plots
-grid.arrange(p1, p2, p3, p4, nrow = 2)
+plot7<-grid.arrange(p1, p2, p3, p4, nrow = 2)
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+png(filename="plot7.png")
+plot(plot7)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
 
 
 It looks like the method mean is the best method for imputing, so that will it be.
 
 ```r
 imp_mean <- na_mean(activity$steps)
-ggplot_na_imputations(activity$steps, imp_mean, subtitle= "Visualization of missing value replacements, method=mean")
+plot4<- ggplot_na_imputations(activity$steps, imp_mean, subtitle= "Visualization of missing value replacements, method=mean")
+plot4
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+```r
+png(filename="plot4.png")
+plot(plot4)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
 
 ### 7 Histogram of the total number of steps taken each day after missing values are imputed
 
@@ -226,17 +280,27 @@ activity_imp<-cbind(activity, imp_mean)
 steps_each_day_imp<-activity_imp%>%
                 group_by(date)%>%
                 summarise_at(vars(imp_mean),list(sum=sum))
-ggplot(data=steps_each_day_imp, aes(sum)) + 
+plot5<-ggplot(data=steps_each_day_imp, aes(sum)) + 
       geom_histogram(binwidth = 2000)+ 
       labs(title="Total number of steps taken each day") +
       labs(x="Total steps",y="Freqency")
+mediaan_imp<-median(steps_each_day_imp$sum, na.rm=TRUE)
+gemiddeld_imp<-round(mean(steps_each_day_imp$sum, na.rm=TRUE),2)
+
+plot5
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 ```r
-mediaan_imp<-median(steps_each_day_imp$sum, na.rm=TRUE)
-gemiddeld_imp<-round(mean(steps_each_day_imp$sum, na.rm=TRUE),2)
+png(filename="plot5.png")
+plot(plot5)
+dev.off()
+```
+
+```
+## png 
+##   2
 ```
 The median before imputing: 10765 and after imputing 10766.1886792
 The mean before imputing: 10766.19 and after imputing 10766.19
@@ -256,6 +320,20 @@ d + facet_wrap(~ weekday,  dir = "v")+ labs(title="Average number of steps taken
 ```
 
 ![](Reproducible_Research_Assignment_Week2._files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+```r
+plot6<-d + facet_wrap(~ weekday,  dir = "v")+ labs(title="Average number of steps taken per 5-minute interval ")
+
+
+png(filename="plot6.png")
+plot(plot6)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
 
 
 ### 9 All of the R code needed to reproduce the results (numbers, plots, etc.) in the report
