@@ -51,7 +51,7 @@ activity<-read.csv(file=paste(getwd(), "activity.csv" , sep = "/"), header=TRUE,
 head(activity)
 ```
 
-Change datatype dat to date()
+Change datatype date to date()
 ```{r}
 activity$date<-as.Date(activity$date)
 str(activity)
